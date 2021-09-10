@@ -25,44 +25,36 @@ words = []
 url = 'https://hooks.slack.com/services/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'
 
 def learn(word, id):
-    print('global words:', globals()['words'])
+    response = openai.Completion.create(
+        engine="davinci-instruct-beta",
+        prompt="Teach me 10 words realted to" + word + "in Spanish:\n\n1.",
+        temperature=0.7,
+        max_tokens=25,
+        top_p=1,
+        frequency_penalty=0.5,
+        presence_penalty=0.5,
+        stop=["2"]
+    )
+    # print("response", response)
 
-    if len(globals()['words']) == 0:
+    response = dict(response)
+    # print("response", response)
 
-        response = openai.Completion.create(
-            engine="davinci-instruct-beta",
-            prompt="Teach me 10 words realted to" + word + "in Spanish:",
-            temperature=0.7,
-            max_tokens=75,
-            top_p=1,
-            frequency_penalty=0.5,
-            presence_penalty=0.5,
-            stop=["."]
-        )
-        # print("response", response)
+    choices = response["choices"][0]
+    # print("choices", choices)
 
-        response = dict(response)
-        # print("response", response)
+    text = choices["text"]
+    print("text", text)
 
-        choices = response["choices"][0]
-        # print("choices", choices)
+    words = text.replace(":", "\n").replace('-','\n')
+    # print("words", words)
 
-        text = choices["text"]
-        # print("text", text)
+    words = words.split("\n")
 
-        words = text.replace("\n", "").replace(":", ",").replace('-','')
-        # print("words", words)
+    print('AI words:', words)
 
-        words = words.split(",")
-
-        globals()['words'] = words
-        print('AI words:', words)
-
-    data = {'text': globals()['words'][0], "thread_ts": id}
+    data = {'text': words[0], "thread_ts": id}
     requests.post(url, json = data)
-
-    globals()['words'] = globals()['words'][1:]
-    print('Final', words)
 
     return words
 
@@ -74,14 +66,15 @@ async def create_item(request: Request):
 
     text = event["text"]
     id = event["ts"]
+    message = event["type"]
     user = event.get("user")
 
-    if '<@U02E7R8BWAD>' in text:
+
+    if message == 'app_mention':
         text = text.replace('<@U02E7R8BWAD>', '')
         Thread(target=learn, args=(text, id)).start()
 
     elif user:
-        print(event, 'event')
         thread_ts = event.get("thread_ts")
 
         if thread_ts:
