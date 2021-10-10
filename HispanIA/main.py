@@ -2,14 +2,14 @@
 # python -m uvicorn main:app --reload
 
 from fastapi import FastAPI, Request
+from config import slack, openApi
 from threading import Thread
-from typing import Optional
 import requests
 import openai
 import os
 
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = openApi
 app = FastAPI()
 
 
@@ -19,7 +19,7 @@ async def root():
 
 
 words = []
-url = 'https://hooks.slack.com/services/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'
+url = slack
 
 
 def parseText(response):
@@ -89,6 +89,10 @@ def evaluate(word, id):
 @app.post("/slack")
 async def slack(request: Request):
     body = await request.json()
+
+    # print(body)
+    # return body.get('challenge')
+
     event = body["event"]
 
     text = event["text"]
