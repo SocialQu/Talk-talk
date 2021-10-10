@@ -85,11 +85,10 @@ def evaluate(word, id):
 
 
 
-@app.post("/slack")
+@app.post('/')
 async def slack(request: Request):
     body = await request.json()
 
-    # print(body)
     # return body.get('challenge')
 
     event = body["event"]
