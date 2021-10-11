@@ -7,6 +7,10 @@
 - [ ] Interactions:
     - [ ] Evaluate if answer is right or not.
     - [ ] Congratulate logic.
+        - [ ] Static response
+        - [ ] Congratulatory message.
+        - [ ] Synonyms.
+        - [ ] Example Sentence
 
 - [ ] Testing:
     - [ ] 
