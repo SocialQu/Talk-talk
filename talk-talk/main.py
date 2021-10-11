@@ -64,13 +64,13 @@ def evaluate(word, id):
     print("Evaluate prompt:", prompt)
 
     response = openai.Completion.create(
-        engine="davinci",
+        engine='davinci',
         prompt=prompt,
         temperature=0.5,
-        max_tokens=44,
+        max_tokens=133,
         top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0,
+        frequency_penalty=0, # TODO: Test other values.
+        presence_penalty=0,  # TODO: Test other values.
         stop=["\n"]  
     )
 
