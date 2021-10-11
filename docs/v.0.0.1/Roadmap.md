@@ -11,6 +11,11 @@
         - [ ] Congratulatory message.
         - [ ] Synonyms.
         - [ ] Example Sentence
+    - [ ] Correction logic.
+        - [ ] Static response.
+        - [ ] AI Correction.
+        - [ ] Synonym.
+        - [ ] Example Sentence.
 
 - [ ] Testing:
     - [ ] 
