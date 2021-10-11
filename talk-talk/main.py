@@ -5,7 +5,6 @@ from config import slack, openApi
 from threading import Thread
 import requests
 import openai
-import os
 
 
 openai.api_key = openApi
