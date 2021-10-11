@@ -5,7 +5,6 @@ from config import slack, openApi
 from threading import Thread
 import requests
 import openai
-import os
 
 
 openai.api_key = openApi
@@ -99,14 +98,17 @@ async def slack(request: Request):
     user = event.get("user")
 
 
+    # app is mentioned
     if message == 'app_mention':
         text = text.replace('<@U02E7R8BWAD>', '')
         globals()['word'] = text
         Thread(target=learn, args=(text, id)).start()
 
+    # message is from user (filters bot replies).
     elif user:
         thread_ts = event.get("thread_ts")
 
+        # message comes in a thread.
         if thread_ts:
             block = event.get('blocks')[0]
             element = block.get('elements')[0]
