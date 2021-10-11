@@ -4,6 +4,7 @@
     - [ ] Playground debugging.
     - [ ] Parse response.
     - [ ] Internal state & API logic for next word.
+
 - [ ] Interactions:
     - [ ] Evaluate if answer is right or not.
     - [ ] Congratulate logic.
@@ -17,6 +18,8 @@
         - [ ] Synonym.
         - [ ] Example Sentence.
 
-- [ ] Testing:
-    - [ ] 
-    - [ ] 
+- [ ] Deployment:
+    - [ ] Document test cases.
+    - [ ] Share training Matrix.
+    - [ ] Review product document.
+    - [ ] Launch documentation.
