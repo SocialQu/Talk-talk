@@ -39,7 +39,7 @@ def learn(word, id):
         engine='davinci',
         prompt=prompt,
         temperature=0.5,
-        max_tokens=33,
+        max_tokens=73,
         top_p=1,
         frequency_penalty=0, # TODO: Test other values.
         presence_penalty=0,  # TODO: Test other values.
