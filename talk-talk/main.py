@@ -32,27 +32,34 @@ def parseText(response):
 
 
 def learn(word, id):
-    prompt="Student: Please teach me a new word related to " + word + " in Spanish.\n\nTeacher: Sure! A new word you can learn is",
+    prompt = 'The following is a list of words in Spanish for English students to learn\n\nadjectives: deslumbrante (dazzling), nuevo (new), bien (well), simpático (sympathetic), diferente (different), intenso (intense), feliz (happy), imposible (impossible), atractivo (attractive), pobre (poor).\nwork: profesional (professional), cuidar (to take care), incapacitado (incapacitated), pago (payment), conocimiento (knowledge), reclutar (recruit), estudiar (study), empresa (company), vacaciones (vacation), cambio (change), colaborar (collaborate), jefe (boss), carpintero (carpenter), proyecto (project).\n' + word + ':'
     print("Learn prompt:", prompt)
 
     response = openai.Completion.create(
-        engine="davinci",
+        engine='davinci',
         prompt=prompt,
-        temperature=0.8,
-        max_tokens=44,
-        top_p=0.5,
-        frequency_penalty=0.5,
-        presence_penalty=0.7,
-        stop=[".", "and", "which", "-"]
+        temperature=0.5,
+        max_tokens=33,
+        top_p=1,
+        frequency_penalty=0, # TODO: Test other values.
+        presence_penalty=0,  # TODO: Test other values.
+        stop=["\n"]  
     )
 
     text = parseText(response)
-    print("Learn response:", text)
+    print('response', text)
 
-    data = {'text': text, "thread_ts": id}
+    words = text.split(',')
+    print("Words:", words)
+
+    word = words[0].split('(')[0]
+    print('Word:', word)
+
+
+    data = {'text': word, "thread_ts": id}
     requests.post(url, json = data)
 
-    globals()['lastWord'] = text
+    globals()[word] = { "text":words, "index":0, "score":0 }
     return words
 
 
