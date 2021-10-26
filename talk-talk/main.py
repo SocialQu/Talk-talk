@@ -32,41 +32,14 @@ def parseText(response):
 
 
 def learn(word, id):
-    prompt="Student: Please teach me a new word related to " + word + " in Spanish.\n\nTeacher: Sure! A new word you can learn is",
-    print("Learn prompt:", prompt)
-
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=prompt,
-        temperature=0.8,
-        max_tokens=44,
-        top_p=0.5,
-        frequency_penalty=0.5,
-        presence_penalty=0.7,
-        stop=[".", "and", "which", "-"]
-    )
-
-    text = parseText(response)
-    print("Learn response:", text)
-
-    data = {'text': text, "thread_ts": id}
-    requests.post(url, json = data)
-
-    globals()['lastWord'] = text
-    return words
-
-
-def evaluate(word, id):
-    lastWord = globals()['lastWord']
-
     prompt = 'The following is a list of words in Spanish for English students to learn\n\nadjectives: deslumbrante (dazzling), nuevo (new), bien (well), simpático (sympathetic), diferente (different), intenso (intense), feliz (happy), imposible (impossible), atractivo (attractive), pobre (poor).\nwork: profesional (professional), cuidar (to take care), incapacitado (incapacitated), pago (payment), conocimiento (knowledge), reclutar (recruit), estudiar (study), empresa (company), vacaciones (vacation), cambio (change), colaborar (collaborate), jefe (boss), carpintero (carpenter), proyecto (project).\n' + word + ':'
-    print("Evaluate prompt:", prompt)
+    print("Learn prompt:", prompt)
 
     response = openai.Completion.create(
         engine='davinci',
         prompt=prompt,
         temperature=0.5,
-        max_tokens=133,
+        max_tokens=73,
         top_p=1,
         frequency_penalty=0, # TODO: Test other values.
         presence_penalty=0,  # TODO: Test other values.
@@ -74,11 +47,51 @@ def evaluate(word, id):
     )
 
     text = parseText(response)
+    print('response', text)
 
-    data = {'text':text, "thread_ts": id}
+    words = text.split(',')
+    print("Words:", words)
+
+    answer = words[0].split('(')[0]
+    print('Word:', answer)
+
+
+    data = {'text': answer, "thread_ts": id}
     requests.post(url, json = data)
 
-    learn(globals()['word'], id)
+    globals()[id] = { "word":word, "words":words, "index":0, "score":0 }
+    return words
+
+
+def evaluate(word, id, thread_id):
+    thread = globals()[thread_id]
+    print('Thread', thread)
+
+    words = thread.get('words')
+    print('words', words)
+
+    answer = words[thread.get('index')].split('(')
+    print('answer', answer)
+
+    answer = answer[1].replace(')', '')
+    print('answer', answer)
+    
+    answer = answer.lower().replace(' ', '')
+    word = word.lower().replace(' ', '')
+    print(answer, word)
+
+    evaluation = 'Good' if answer == word else 'Bad'
+    data = {'text':evaluation, "thread_ts": id}
+    requests.post(url, json = data)
+
+    newIndex = globals()[thread_id]["index"] + 1
+    globals()[thread_id]["index"] = newIndex
+
+    nextWord = words[newIndex].split('(')[0]
+
+    data = {'text':nextWord, "thread_ts": id}
+    requests.post(url, json = data)
+
     return
 
 
@@ -113,6 +126,6 @@ async def slack(request: Request):
             block = event.get('blocks')[0]
             element = block.get('elements')[0]
             text = element.get('elements')[0].get('text')
-            Thread(target=evaluate, args=(text, id)).start()
+            Thread(target=evaluate, args=(text, id, thread_ts)).start()
 
     return
