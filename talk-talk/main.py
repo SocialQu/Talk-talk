@@ -3,6 +3,7 @@
 from fastapi import FastAPI, Request
 from config import slack, openApi
 from threading import Thread
+from random import randint
 import requests
 import openai
 
@@ -55,7 +56,6 @@ def learn(word, id):
     answer = words[0].split('(')[0]
     print('Word:', answer)
 
-
     data = {'text': answer, "thread_ts": id}
     requests.post(url, json = data)
 
@@ -76,20 +76,26 @@ def evaluate(word, id, thread_id):
     answer = answer[1].replace(')', '')
     print('answer', answer)
     
-    answer = answer.lower().replace(' ', '')
+    answer_word = answer.lower().replace(' ', '')
     word = word.lower().replace(' ', '')
-    print(answer, word)
+    print(answer_word, word)
 
-    evaluation = 'Good' if answer == word else 'Bad'
-    data = {'text':evaluation, "thread_ts": id}
-    requests.post(url, json = data)
+    response = ''
+    if answer_word != word:
+        data = {'text':"No, it's" + answer, "thread_ts": id}
+        requests.post(url, json = data)
+
+    else:
+        good_responses = [ 'Congratulations!', 'Yes, that’s right.', 'Correct!', 'Good Job', 'Well Done!' ]
+        response = good_responses[randint(0, len(good_responses) - 1)] + ' '
+
 
     newIndex = globals()[thread_id]["index"] + 1
     globals()[thread_id]["index"] = newIndex
 
     nextWord = words[newIndex].split('(')[0]
 
-    data = {'text':nextWord, "thread_ts": id}
+    data = {'text':response + nextWord, "thread_ts":id}
     requests.post(url, json = data)
 
     return
