@@ -86,8 +86,8 @@ def evaluate(word, id, thread_id):
         requests.post(url, json = data)
 
     else:
-        good_responses = [ 'Congratulations!', 'Yes, that’s right.', 'Correct!', 'Good Job', 'Well Done!' ]
-        response = good_responses[randint(0, len(good_responses) - 1)] + ' '
+        good_responses = [ 'Congratulations!', 'Yes, that’s right.', 'Correct!', 'Good Job!', 'Well Done!' ]
+        response = good_responses[randint(0, len(good_responses) - 1)] + '\n'
 
 
     newIndex = globals()[thread_id]["index"] + 1
