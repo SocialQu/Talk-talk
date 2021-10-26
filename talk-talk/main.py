@@ -82,7 +82,7 @@ def evaluate(word, id, thread_id):
 
     response = ''
     if answer_word != word:
-        data = {'text':"No, it's" + answer, "thread_ts": id}
+        data = {'text':'No, the answer is "' + answer + '"', "thread_ts": id}
         requests.post(url, json = data)
 
     else:
