@@ -3,6 +3,7 @@
 from fastapi import FastAPI, Request
 from config import slack, openApi
 from threading import Thread
+from random import randint
 import requests
 import openai
 
@@ -39,10 +40,10 @@ def learn(word, id):
         engine='davinci',
         prompt=prompt,
         temperature=0.5,
-        max_tokens=73,
+        max_tokens=100,
         top_p=1,
-        frequency_penalty=0, # TODO: Test other values.
-        presence_penalty=0,  # TODO: Test other values.
+        frequency_penalty=0.25,
+        presence_penalty=0.25,
         stop=["\n"]  
     )
 
@@ -54,7 +55,6 @@ def learn(word, id):
 
     answer = words[0].split('(')[0]
     print('Word:', answer)
-
 
     data = {'text': answer, "thread_ts": id}
     requests.post(url, json = data)
@@ -76,24 +76,47 @@ def evaluate(word, id, thread_id):
     answer = answer[1].replace(')', '')
     print('answer', answer)
     
-    answer = answer.lower().replace(' ', '')
-    word = word.lower().replace(' ', '')
-    print(answer, word)
+    answer_word = answer.lower().replace(' ', '').replace('.', '')
+    word = word.lower().replace(' ', '').replace('.', '')
+    print(answer_word, word)
 
-    evaluation = 'Good' if answer == word else 'Bad'
-    data = {'text':evaluation, "thread_ts": id}
-    requests.post(url, json = data)
+    response = ''
+    if answer_word != word:
+        data = {'text':'No, the answer is "' + answer + '"', "thread_ts": id}
+        requests.post(url, json = data)
+
+    else:
+        good_responses = [ 'Congratulations!', 'Yes, that’s right.', 'Correct!', 'Good Job!', 'Well Done!' ]
+        response = good_responses[randint(0, len(good_responses) - 1)] + '\n'
+
 
     newIndex = globals()[thread_id]["index"] + 1
     globals()[thread_id]["index"] = newIndex
 
     nextWord = words[newIndex].split('(')[0]
 
-    data = {'text':nextWord, "thread_ts": id}
+    data = {'text':response + nextWord, "thread_ts":id}
     requests.post(url, json = data)
 
     return
 
+
+def sample_sentence(word):
+    prompt = "Teach me a sentence in Spanish with \"negocio\":\n\nEl negocio es una actividad lucrativa que se puede desarrollar en cualquier parte del mundo.\n\n###\n\nTeach me a sentence in Spanish with \"frutas\":\n\nLas frutas son una fuente de vitaminas y minerales que nos ayuda a mantenernos sanos.\n\n###\n\nTeach me a sentence in Spanish with " + word + ":"
+
+    response = openai.Completion.create(
+        engine="davinci-instruct-beta",
+        prompt=prompt,
+        temperature=0.5,
+        max_tokens=100,
+        top_p=1,
+        frequency_penalty=0.25,
+        presence_penalty=0.25,
+        stop=["###"]
+    )    
+
+    text = parseText(response)
+    print('response', text)
 
 
 
