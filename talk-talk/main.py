@@ -76,8 +76,8 @@ def evaluate(word, id, thread_id):
     answer = answer[1].replace(')', '')
     print('answer', answer)
     
-    answer_word = answer.lower().replace(' ', '')
-    word = word.lower().replace(' ', '')
+    answer_word = answer.lower().replace(' ', '').replace('.', '')
+    word = word.lower().replace(' ', '').replace('.', '')
     print(answer_word, word)
 
     response = ''
