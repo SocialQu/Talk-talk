@@ -90,25 +90,6 @@ def evaluate(word, id, thread_id):
     return
 
 
-def sample_sentence(word):
-    prompt = "Teach me a sentence in Spanish with \"negocio\":\n\nEl negocio es una actividad lucrativa que se puede desarrollar en cualquier parte del mundo.\n\n###\n\nTeach me a sentence in Spanish with \"frutas\":\n\nLas frutas son una fuente de vitaminas y minerales que nos ayuda a mantenernos sanos.\n\n###\n\nTeach me a sentence in Spanish with " + word + ":"
-
-    response = openai.Completion.create(
-        engine="davinci-instruct-beta",
-        prompt=prompt,
-        temperature=0.5,
-        max_tokens=100,
-        top_p=1,
-        frequency_penalty=0.25,
-        presence_penalty=0.25,
-        stop=["###"]
-    )    
-
-    text = parseText(response)
-    print('response', text)
-
-
-
 @app.post('/')
 async def slack(request: Request):
     body = await request.json()
