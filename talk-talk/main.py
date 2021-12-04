@@ -1,5 +1,6 @@
 # python -m uvicorn main:app --reload
 
+from queries.learnVocabulary import learn_vocabulary
 from fastapi import FastAPI, Request
 from config import slack, openApi
 from threading import Thread
@@ -22,21 +23,9 @@ words = []
 url = slack
 
 def learn(word, id):
-    prompt = 'The following is a list of words in Spanish for English students to learn\n\nadjectives: deslumbrante (dazzling), nuevo (new), bien (well), simpático (sympathetic), diferente (different), intenso (intense), feliz (happy), imposible (impossible), atractivo (attractive), pobre (poor).\nwork: profesional (professional), cuidar (to take care), incapacitado (incapacitated), pago (payment), conocimiento (knowledge), reclutar (recruit), estudiar (study), empresa (company), vacaciones (vacation), cambio (change), colaborar (collaborate), jefe (boss), carpintero (carpenter), proyecto (project).\n' + word + ':'
-    print("Learn prompt:", prompt)
+    vocabulary = learn_vocabulary(word)
 
-    response = openai.Completion.create(
-        engine='davinci',
-        prompt=prompt,
-        temperature=0.5,
-        max_tokens=100,
-        top_p=1,
-        frequency_penalty=0.25,
-        presence_penalty=0.25,
-        stop=["\n"]  
-    )
-
-    text = parseText(response)
+    text = parseText(vocabulary)
     print('response', text)
 
     words = text.split(',')
