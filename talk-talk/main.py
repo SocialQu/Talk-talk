@@ -102,7 +102,7 @@ async def root():
 async def slack(request: Request):
     body = await request.json()
 
-    # return body.get('challenge')
+    if body.get('challenge'): return body['challenge']
 
     event = body['event']
 
