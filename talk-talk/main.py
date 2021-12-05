@@ -19,7 +19,7 @@ def learn(word, id):
     vocabulary = learn_vocabulary(word)
     globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True }
 
-    if len(vocabulary) > 0: text = vocabulary[0].word
+    if len(vocabulary) > 0: text = vocabulary[0].question
     else: text = 'Please choose a new word'
 
     data = {'text':text, 'thread_ts': id}
@@ -28,7 +28,8 @@ def learn(word, id):
     return
 
 
-def evaluate(word, id, thread_id):
+def evaluate(response, id, thread_id):
+    text = ''
     thread = globals()[thread_id]
     vocabulary = thread.get('vocabulary')
     index = thread.get('index')
@@ -36,29 +37,28 @@ def evaluate(word, id, thread_id):
     answer = vocabulary[index].get('answer')
     print('answer', answer)
 
-    response = ''
-    if word.lower() == answer:
+    # Evaluate translation
+    if response.lower() == answer:
         good_responses = [ 'Congratulations!', 'Yes, that’s right.', 'Correct!', 'Good Job!', 'Well Done!' ]
-        response = good_responses[randint(0, len(good_responses) - 1)] + '\n'
+        text = good_responses[randint(0, len(good_responses) - 1)] + '\n'
 
     else:
         data = {'text':'No, the answer is "' + answer + '"', 'thread_ts': id}
         requests.post(slack_url, json=data)
 
+    # Next prompt
     if len(vocabulary) == index + 1:
         globals()[thread_id]['learning'] = False
         prompt = 'Now, please use one of the words you learned in a Spanish sentence:'
-        data = {'text':response + prompt, 'thread_ts':id}
+        data = {'text':text + prompt, 'thread_ts':id}
         requests.post(slack_url, json = data)
-        return
 
-    newIndex = index + 1
-    globals()[thread_id]['index'] = newIndex
-
-    nextWord = vocabulary[newIndex].split('(')[0]
-
-    data = {'text':response + nextWord, 'thread_ts':id}
-    requests.post(slack_url, json = data)
+    else:
+        newIndex = index + 1
+        globals()[thread_id]['index'] = newIndex
+        nextWord = vocabulary[newIndex].get('question')
+        data = {'text':text + nextWord, 'thread_ts':id}
+        requests.post(slack_url, json = data)
 
     return
 
