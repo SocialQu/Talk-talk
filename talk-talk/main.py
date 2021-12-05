@@ -20,7 +20,7 @@ def learn(word, id):
     vocabulary = learn_vocabulary(word)
     globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True, 'counter':0 }
 
-    if len(vocabulary) > 0: text = vocabulary[0].question
+    if len(vocabulary) > 0: text = vocabulary[0].get('question')
     else: text = 'Please choose a different word.'
 
     data = {'text':text, 'thread_ts': id}
@@ -116,7 +116,8 @@ async def slack(request: Request):
     if message == 'app_mention':
         text = text.replace('<@U02E7R8BWAD>', '')
         globals()['word'] = text
-        Thread(target=learn, args=(text, id)).start()
+        try: Thread(target=learn, args=(text, id)).start()
+        except: return
 
     # message is from user (filters bot replies).
     elif user:
@@ -127,6 +128,7 @@ async def slack(request: Request):
             block = event.get('blocks')[0]
             element = block.get('elements')[0]
             text = element.get('elements')[0].get('text')
-            Thread(target=reply, args=(text, id, thread_ts)).start()
+            try: Thread(target=reply, args=(text, id, thread_ts)).start()
+            except: return
 
     return
