@@ -1,7 +1,6 @@
 from ..utils import parseText
 from ..config import engine
 import openai
-import os
 
 
 def learn_vocabulary(word):
