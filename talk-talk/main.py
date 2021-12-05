@@ -14,27 +14,17 @@ openai.api_key = openApi
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
 words = []
 url = slack
 
+
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
+    globals()[id] = { "word":word, "words":vocabulary, "index":0, "score":0 }
 
-    words = vocabulary.split(',')
-    print("Words:", words)
-
-    answer = words[0].split('(')[0]
-    print('Word:', answer)
-
-    data = {'text': answer, "thread_ts": id}
+    data = {'text':vocabulary[0].word, "thread_ts": id}
     requests.post(url, json = data)
 
-    globals()[id] = { "word":word, "words":words, "index":0, "score":0 }
     return words
 
 
@@ -74,6 +64,11 @@ def evaluate(word, id, thread_id):
     requests.post(url, json = data)
 
     return
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 
 @app.post('/')
