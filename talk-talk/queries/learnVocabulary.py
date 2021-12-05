@@ -1,5 +1,4 @@
-from ..config import engine
-from utils import parseText
+from .utils import parseText
 import openai
 
 
@@ -7,7 +6,7 @@ def learn_vocabulary(word):
     prompt = 'The following is a list of words in Spanish for English students to learn\n\nadjectives: deslumbrante (dazzling), nuevo (new), bien (well), simpático (sympathetic), diferente (different), intenso (intense), feliz (happy), imposible (impossible), atractivo (attractive), pobre (poor).\nwork: profesional (professional), cuidar (to take care), incapacitado (incapacitated), pago (payment), conocimiento (knowledge), reclutar (recruit), estudiar (study), empresa (company), vacaciones (vacation), cambio (change), colaborar (collaborate), jefe (boss), carpintero (carpenter), proyecto (project).\n' + word + ':'
 
     completion = openai.Completion.create(
-        engine=engine,
+        engine='ada',
         prompt=prompt,
         temperature=0.5,
         max_tokens=133,
@@ -24,6 +23,7 @@ def learn_vocabulary(word):
     print('Words:', words)
     
     vocabulary = []
+    keys = []
 
     for word in words:
         if not '(' in word: continue        
@@ -33,9 +33,10 @@ def learn_vocabulary(word):
         translation = word.split('(')[0]
         answer = translation.lower().replace(')', '').replace('.', '')
 
-        if question in vocabulary.keys(): continue
+        if question in keys: continue
 
         vocabulary.append({ 'question':question, 'answer':answer })
+        keys.append(question)
 
     print('Vocabulary:', vocabulary)
     return vocabulary
