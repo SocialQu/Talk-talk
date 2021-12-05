@@ -14,3 +14,6 @@ A spanish speaking conversational agent
 
 3. Start the API: `python -m uvicorn main:app --reload`
 
+4. Expose port 8000 with ngronk: `./ngrok http 80`
+
+5. [Config Slack wekhook URL](https://api.slack.com/apps/A02E1B4N6TE/event-subscriptions?)
