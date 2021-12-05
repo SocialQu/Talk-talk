@@ -30,13 +30,13 @@ def learn_vocabulary(word):
         if not '(' in word: continue        
         if not ')': continue
 
-        root = word.split('(')[0]
+        question = word.split('(')[0]
         translation = word.split('(')[0]
         answer = translation.lower().replace(')', '').replace('.', '')
 
-        if root in vocabulary.keys(): continue
+        if question in vocabulary.keys(): continue
 
-        vocabulary.append({ "word":root, "answer":answer })
+        vocabulary.append({ "question":question, "answer":answer })
 
     print("Vocabulary:", vocabulary)
     return vocabulary
