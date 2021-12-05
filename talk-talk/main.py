@@ -1,8 +1,8 @@
 # python -m uvicorn main:app --reload
 
 from queries.learnVocabulary import learn_vocabulary
+from config import slack_url, openApi
 from fastapi import FastAPI, Request
-from config import slack, openApi
 from threading import Thread
 from utils import parseText
 from random import randint
@@ -14,28 +14,23 @@ openai.api_key = openApi
 app = FastAPI()
 
 
-words = []
-url = slack
-
 
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
-    globals()[id] = { "word":word, "words":vocabulary, "index":0, "score":0 }
+    globals()[id] = { "word":word, "vocabulary":vocabulary, "index":0, "score":0 }
 
     data = {'text':vocabulary[0].word, "thread_ts": id}
-    requests.post(url, json = data)
+    requests.post(slack_url, json = data)
 
-    return words
+    return
 
 
 def evaluate(word, id, thread_id):
     thread = globals()[thread_id]
-    print('Thread', thread)
+    vocabulary = thread.get('vocabulary')
+    index = thread.get('index')
 
-    words = thread.get('words')
-    print('words', words)
-
-    answer = words[thread.get('index')].split('(')
+    answer = vocabulary[index].get('answer')
     print('answer', answer)
 
     answer = answer[1].replace(')', '')
@@ -48,7 +43,7 @@ def evaluate(word, id, thread_id):
     response = ''
     if answer_word != word:
         data = {'text':'No, the answer is "' + answer + '"', "thread_ts": id}
-        requests.post(url, json = data)
+        requests.post(slack_url, json = data)
 
     else:
         good_responses = [ 'Congratulations!', 'Yes, that’s right.', 'Correct!', 'Good Job!', 'Well Done!' ]
@@ -58,10 +53,10 @@ def evaluate(word, id, thread_id):
     newIndex = globals()[thread_id]["index"] + 1
     globals()[thread_id]["index"] = newIndex
 
-    nextWord = words[newIndex].split('(')[0]
+    nextWord = vocabulary[newIndex].split('(')[0]
 
     data = {'text':response + nextWord, "thread_ts":id}
-    requests.post(url, json = data)
+    requests.post(slack_url, json = data)
 
     return
 
