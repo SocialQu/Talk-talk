@@ -74,8 +74,10 @@ def evaluate(response, id, thread_id):
 
 def chat(response, id, thread_id): 
     correction = correct(response)
+    print('Correction', correction, response)
+
     if correction != response:
-        data = {'text':'**' + correction + '**' , 'thread_ts':id}
+        data = {'text':'Correction: *' + correction + '*' , 'thread_ts':id}
         requests.post(slack_url, json = data)
 
     thread = globals()[thread_id]
