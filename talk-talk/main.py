@@ -18,7 +18,7 @@ app = FastAPI()
 
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
-    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True, 'counter':0 }
+    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True, 'counter':0, 'conversation':'' }
 
     if len(vocabulary) > 0: text = vocabulary[0].get('question')
     else: text = 'Please choose a different word.'
@@ -82,10 +82,13 @@ def chat(response, id, thread_id):
 
     thread = globals()[thread_id]
     counter = thread.get('counter')
+    conversation = thread.get('conversation') + response
 
     if counter < 5: 
         globals()[thread_id]['counter'] = counter + 1
-        text = talk(response)
+        text = talk(conversation)
+        globals()[thread_id]['conversation'] = conversation + '\nMexicano: ' + text + '\n\nEstudiante: '
+        
 
     else: text = "Great! You've reached 5 interactions, try learning new vocabulary."
 
