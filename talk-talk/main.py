@@ -17,9 +17,9 @@ app = FastAPI()
 
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
-    globals()[id] = { "word":word, "vocabulary":vocabulary, "index":0, "score":0 }
+    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'score':0 }
 
-    data = {'text':vocabulary[0].word, "thread_ts": id}
+    data = {'text':vocabulary[0].word, 'thread_ts': id}
     requests.post(slack_url, json = data)
 
     return
@@ -42,7 +42,7 @@ def evaluate(word, id, thread_id):
 
     response = ''
     if answer_word != word:
-        data = {'text':'No, the answer is "' + answer + '"', "thread_ts": id}
+        data = {'text':'No, the answer is "' + answer + '"', 'thread_ts': id}
         requests.post(slack_url, json = data)
 
     else:
@@ -50,20 +50,20 @@ def evaluate(word, id, thread_id):
         response = good_responses[randint(0, len(good_responses) - 1)] + '\n'
 
 
-    newIndex = globals()[thread_id]["index"] + 1
-    globals()[thread_id]["index"] = newIndex
+    newIndex = globals()[thread_id]['index'] + 1
+    globals()[thread_id]['index'] = newIndex
 
     nextWord = vocabulary[newIndex].split('(')[0]
 
-    data = {'text':response + nextWord, "thread_ts":id}
+    data = {'text':response + nextWord, 'thread_ts':id}
     requests.post(slack_url, json = data)
 
     return
 
 
-@app.get("/")
+@app.get('/')
 async def root():
-    return {"message": "Hello World"}
+    return {'message': 'Hello World'}
 
 
 @app.post('/')
@@ -72,12 +72,12 @@ async def slack(request: Request):
 
     # return body.get('challenge')
 
-    event = body["event"]
+    event = body['event']
 
-    text = event["text"]
-    id = event["ts"]
-    message = event["type"]
-    user = event.get("user")
+    text = event['text']
+    id = event['ts']
+    message = event['type']
+    user = event.get('user')
 
 
     # app is mentioned
@@ -88,7 +88,7 @@ async def slack(request: Request):
 
     # message is from user (filters bot replies).
     elif user:
-        thread_ts = event.get("thread_ts")
+        thread_ts = event.get('thread_ts')
 
         # message comes in a thread.
         if thread_ts:
