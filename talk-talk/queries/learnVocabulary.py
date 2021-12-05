@@ -31,11 +31,12 @@ def learn_vocabulary(word):
         if not ')': continue
 
         root = word.split('(')[0]
-        translation = word.split('(')[0].replace(')', '').replace('.', '')
+        translation = word.split('(')[0]
+        answer = translation.lower().replace(')', '').replace('.', '')
 
         if root in vocabulary.keys(): continue
 
-        vocabulary.append({ "word":root, "answer":translation })
+        vocabulary.append({ "word":root, "answer":answer })
 
     print("Vocabulary:", vocabulary)
     return vocabulary
