@@ -16,7 +16,7 @@ app = FastAPI()
 
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
-    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True, counter:0 }
+    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True, 'counter':0 }
 
     if len(vocabulary) > 0: text = vocabulary[0].question
     else: text = 'Please choose a different word.'
@@ -70,13 +70,25 @@ def evaluate(response, id, thread_id):
 
 
 def correct(): return ''
+def talk(): return ''
 
 def chat(response, id, thread_id): 
     correction = correct(response)
     if correction != response:
-        data = {'text':"**" + correction + "**" , 'thread_ts':id}
+        data = {'text':'**' + correction + '**' , 'thread_ts':id}
         requests.post(slack_url, json = data)
 
+    thread = globals()[thread_id]
+    counter = thread.get('counter')
+
+    if counter < 5: 
+        globals()[thread_id]['counter'] = counter + 1
+        text = talk()
+
+    else: text = "Great! You've reached 5 interactions, try learning new vocabulary."
+
+    data = {'text': text , 'thread_ts':id}
+    requests.post(slack_url, json = data)
 
     return
 
