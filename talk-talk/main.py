@@ -1,10 +1,11 @@
 # python -m uvicorn main:app --reload
 
 from queries.learnVocabulary import learn_vocabulary
+from queries.correct import correct
+
 from config import slack_url, openApi
 from fastapi import FastAPI, Request
 from threading import Thread
-from utils import parseText
 from random import randint
 import requests
 import openai
@@ -69,7 +70,6 @@ def evaluate(response, id, thread_id):
     return
 
 
-def correct(): return ''
 def talk(): return ''
 
 def chat(response, id, thread_id): 
