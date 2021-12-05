@@ -14,14 +14,14 @@ def learn_vocabulary(word):
         top_p=1,
         frequency_penalty=0.5,
         presence_penalty=0.5,
-        stop=["\n"]
+        stop=['\n']
     )
 
     text = parseText(completion)
     print('Text:', text)
 
     words = text.split(',')
-    print("Words:", words)
+    print('Words:', words)
     
     vocabulary = []
 
@@ -35,7 +35,7 @@ def learn_vocabulary(word):
 
         if question in vocabulary.keys(): continue
 
-        vocabulary.append({ "question":question, "answer":answer })
+        vocabulary.append({ 'question':question, 'answer':answer })
 
-    print("Vocabulary:", vocabulary)
+    print('Vocabulary:', vocabulary)
     return vocabulary
