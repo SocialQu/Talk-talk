@@ -1,5 +1,5 @@
-from ..utils import parseText
 from ..config import engine
+from utils import parseText
 import openai
 
 
