@@ -30,7 +30,7 @@ def learn_vocabulary(word):
         if not ')': continue
 
         question = word.split('(')[0]
-        translation = word.split('(')[0]
+        translation = word.split('(')[1]
         answer = translation.lower().replace(')', '').replace('.', '')
 
         if question in keys: continue
