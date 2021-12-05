@@ -1,11 +1,11 @@
 from ..utils import parseText
+from ..config import engine
 import openai
-import os
 
 
 def correct(reply):
     completion = openai.Completion.create(
-        engine="curie",
+        engine=engine,
         prompt="Original:" + reply + "\nEspañol Correcto:",
         temperature=0,
         max_tokens=60,
