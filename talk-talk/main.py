@@ -19,7 +19,10 @@ def learn(word, id):
     vocabulary = learn_vocabulary(word)
     globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True }
 
-    data = {'text':vocabulary[0].word, 'thread_ts': id}
+    if len(vocabulary) > 0: text = vocabulary[0].word
+    else: text = 'Please choose a new word'
+
+    data = {'text':text, 'thread_ts': id}
     requests.post(slack_url, json = data)
 
     return
