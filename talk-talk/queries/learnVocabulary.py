@@ -1,3 +1,4 @@
+from ..utils import parseText
 import openai
 import os
 
@@ -16,5 +17,8 @@ def learn_vocabulary(word):
         presence_penalty=0.5,
         stop=["\n"]
     )
+
+    text = parseText(vocabulary)
+    print('response', text)
 
     return response
