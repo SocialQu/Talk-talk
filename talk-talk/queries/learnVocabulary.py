@@ -7,7 +7,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def learn_vocabulary(word):
     prompt = 'The following is a list of words in Spanish for English students to learn\n\nadjectives: deslumbrante (dazzling), nuevo (new), bien (well), simpático (sympathetic), diferente (different), intenso (intense), feliz (happy), imposible (impossible), atractivo (attractive), pobre (poor).\nwork: profesional (professional), cuidar (to take care), incapacitado (incapacitated), pago (payment), conocimiento (knowledge), reclutar (recruit), estudiar (study), empresa (company), vacaciones (vacation), cambio (change), colaborar (collaborate), jefe (boss), carpintero (carpenter), proyecto (project).\n' + word + ':'
 
-    response = openai.Completion.create(
+    completion = openai.Completion.create(
         engine="curie",
         prompt=prompt,
         temperature=0.5,
@@ -18,7 +18,7 @@ def learn_vocabulary(word):
         stop=["\n"]
     )
 
-    text = parseText(vocabulary)
-    print('response', text)
+    text = parseText(completion)
+    print('Text:', text)
 
-    return response
+    return text
