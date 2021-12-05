@@ -14,18 +14,24 @@ openai.api_key = openApi
 app = FastAPI()
 
 
-
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
     globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True }
 
     if len(vocabulary) > 0: text = vocabulary[0].question
-    else: text = 'Please choose a new word'
+    else: text = 'Please choose a different word.'
 
     data = {'text':text, 'thread_ts': id}
     requests.post(slack_url, json = data)
 
     return
+
+
+
+def reply(response, id, thread_id):
+    thread = globals()[thread_id]
+    if thread.get('learning'): evaluate(response, id, thread_id)
+    else: chat(response, id , thread_id)
 
 
 def evaluate(response, id, thread_id):
@@ -62,6 +68,8 @@ def evaluate(response, id, thread_id):
 
     return
 
+def chat(): return
+
 
 @app.get('/')
 async def root():
@@ -97,6 +105,6 @@ async def slack(request: Request):
             block = event.get('blocks')[0]
             element = block.get('elements')[0]
             text = element.get('elements')[0].get('text')
-            Thread(target=evaluate, args=(text, id, thread_ts)).start()
+            Thread(target=reply, args=(text, id, thread_ts)).start()
 
     return
