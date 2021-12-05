@@ -33,6 +33,8 @@ def learn_vocabulary(word):
         root = word.split('(')[0]
         translation = word.split('(')[0].replace(')', '').replace('.', '')
 
+        if root in vocabulary.keys(): continue
+
         vocabulary.append({ "word":root, "answer":translation })
 
     print("Vocabulary:", vocabulary)
