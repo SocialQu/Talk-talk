@@ -10,3 +10,7 @@ A spanish speaking conversational agent
 * [Uvicorn](https://www.uvicorn.org/)
 * [Ngrok](https://dashboard.ngrok.com/get-started/setup)
 
+2. Create a `config.py` file based on config.git.py structure. 
+
+3. Start the API: `python -m uvicorn main:app --reload`
+
