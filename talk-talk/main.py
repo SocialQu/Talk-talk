@@ -16,7 +16,7 @@ app = FastAPI()
 
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
-    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True }
+    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True, counter:0 }
 
     if len(vocabulary) > 0: text = vocabulary[0].question
     else: text = 'Please choose a different word.'
@@ -68,7 +68,17 @@ def evaluate(response, id, thread_id):
 
     return
 
-def chat(): return
+
+def correct(): return ''
+
+def chat(response, id, thread_id): 
+    correction = correct(response)
+    if correction != response:
+        data = {'text':"**" + correction + "**" , 'thread_ts':id}
+        requests.post(slack_url, json = data)
+
+
+    return
 
 
 @app.get('/')
