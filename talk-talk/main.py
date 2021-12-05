@@ -25,10 +25,7 @@ url = slack
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
 
-    text = parseText(vocabulary)
-    print('response', text)
-
-    words = text.split(',')
+    words = vocabulary.split(',')
     print("Words:", words)
 
     answer = words[0].split('(')[0]
