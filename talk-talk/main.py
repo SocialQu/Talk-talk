@@ -33,24 +33,17 @@ def evaluate(word, id, thread_id):
     answer = vocabulary[index].get('answer')
     print('answer', answer)
 
-    answer = answer[1].replace(')', '')
-    print('answer', answer)
-    
-    answer_word = answer.lower().replace(' ', '').replace('.', '')
-    word = word.lower().replace(' ', '').replace('.', '')
-    print(answer_word, word)
-
     response = ''
-    if answer_word != word:
-        data = {'text':'No, the answer is "' + answer + '"', 'thread_ts': id}
-        requests.post(slack_url, json = data)
-
-    else:
+    if word.lower() == answer:
         good_responses = [ 'Congratulations!', 'Yes, that’s right.', 'Correct!', 'Good Job!', 'Well Done!' ]
         response = good_responses[randint(0, len(good_responses) - 1)] + '\n'
 
+    else:
+        data = {'text':'No, the answer is "' + answer + '"', 'thread_ts': id}
+        requests.post(slack_url, json=data)
 
-    newIndex = globals()[thread_id]['index'] + 1
+
+    newIndex = index + 1
     globals()[thread_id]['index'] = newIndex
 
     nextWord = vocabulary[newIndex].split('(')[0]
