@@ -2,6 +2,7 @@
 
 from queries.learnVocabulary import learn_vocabulary
 from queries.correct import correct
+from queries.talk import talk
 
 from config import slack_url, openApi
 from fastapi import FastAPI, Request
@@ -70,7 +71,6 @@ def evaluate(response, id, thread_id):
     return
 
 
-def talk(): return ''
 
 def chat(response, id, thread_id): 
     correction = correct(response)
@@ -83,7 +83,7 @@ def chat(response, id, thread_id):
 
     if counter < 5: 
         globals()[thread_id]['counter'] = counter + 1
-        text = talk()
+        text = talk(response)
 
     else: text = "Great! You've reached 5 interactions, try learning new vocabulary."
 
