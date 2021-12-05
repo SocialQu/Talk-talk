@@ -17,7 +17,7 @@ app = FastAPI()
 
 def learn(word, id):
     vocabulary = learn_vocabulary(word)
-    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'score':0 }
+    globals()[id] = { 'word':word, 'vocabulary':vocabulary, 'index':0, 'learning':True }
 
     data = {'text':vocabulary[0].word, 'thread_ts': id}
     requests.post(slack_url, json = data)
@@ -42,6 +42,12 @@ def evaluate(word, id, thread_id):
         data = {'text':'No, the answer is "' + answer + '"', 'thread_ts': id}
         requests.post(slack_url, json=data)
 
+    if len(vocabulary) == index + 1:
+        globals()[thread_id]['learning'] = False
+        prompt = 'Now, please use one of the words you learned in a Spanish sentence:'
+        data = {'text':response + prompt, 'thread_ts':id}
+        requests.post(slack_url, json = data)
+        return
 
     newIndex = index + 1
     globals()[thread_id]['index'] = newIndex
