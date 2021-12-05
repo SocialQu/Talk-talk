@@ -1,10 +1,10 @@
-from .utils import parseText
+from .utils import parseText, engine
 import openai
 
 
 def talk(conversation):
     completion = openai.Completion.create(
-        engine='curie',
+        engine=engine,
         prompt='La siguiente es una conversación entre un mexicano y un estudiante de Español. El mexicano es educado, creativo, inteligente y muy amigable.\n\nEstudiante: ' + conversation + '\nMexicano:',
         temperature=0.9,
         max_tokens=150,
