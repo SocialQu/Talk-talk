@@ -21,4 +21,19 @@ def learn_vocabulary(word):
     text = parseText(completion)
     print('Text:', text)
 
-    return text
+    words = text.split(',')
+    print("Words:", words)
+    
+    vocabulary = []
+
+    for word in words:
+        if not '(' in word: continue        
+        if not ')': continue
+
+        root = word.split('(')[0]
+        translation = word.split('(')[0].replace(')', '').replace('.', '')
+
+        vocabulary.append({ "word":root, "answer":translation })
+
+    print("Vocabulary:", vocabulary)
+    return vocabulary
