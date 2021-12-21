@@ -76,7 +76,7 @@ def chat(response, id, thread_id):
     correction = correct(response)
     print('Correction', correction, response)
 
-    if correction != response:
+    if correction != response.lstrip().rstrip():
         data = {'text':'Correction: *' + correction + '*' , 'thread_ts':id}
         requests.post(slack_url, json = data)
 
