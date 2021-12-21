@@ -17,4 +17,4 @@ def correct(reply):
     text = parseText(completion)
     print('Text:', text)
 
-    return text
+    return text.lstrip().rstrip()
