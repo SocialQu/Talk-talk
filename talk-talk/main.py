@@ -29,6 +29,15 @@ def learn(word, id):
     return
 
 
+def translate(word, id):
+    vocabulary = translate(word)
+
+    data = {'text':vocabulary, 'thread_ts': id}
+    requests.post(slack_url, json = data)
+
+    return
+
+
 
 def reply(response, id, thread_id):
     thread = globals()[thread_id]
@@ -119,7 +128,10 @@ async def slack(request: Request):
 
     # app is mentioned
     if message == 'app_mention':
+        # @U02E7R8BWAD is the app ID. TODO: configure app id for #dev env.
         text = text.replace('<@U02E7R8BWAD>', '')
+        if text has == 'translate': Thread(target=translate, args=(text.replace('translate', ''), id)).start()
+        if text has == 'sentence': Thread(target=sentence, args=(text, id)).start()
         globals()['word'] = text
         try: Thread(target=learn, args=(text, id)).start()
         except: return
