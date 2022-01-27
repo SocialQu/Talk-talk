@@ -1,6 +1,12 @@
 # Talk-talk
 
 A spanish speaking conversational agent
+Interacts with users by:
+a) requesting word translations and making corrections
+b) requesting users make sentences with the words in the interaction
+c) provides meanings of specific words or senteces requestes by users
+d) For more advanced users: can hold short conversations for users to practice 5 interactions on a topic
+
 
 ## Set up
 
